@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="MauiApp1.DeviceHmi"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:here="clr-namespace:MauiApp1"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Name="DeviceHmiView"
+    x:DataType="here:DeviceHmi">
+
+
+    <Border
+        Padding="10"
+        BackgroundColor="Red"
+        BindingContext="{x:Reference DeviceHmiView}"
+        VerticalOptions="Center">
+        <Border.Shadow>
+            <Shadow Brush="Black"
+                Offset="20,20"
+                Radius="40"
+                Opacity="0.8" />
+        </Border.Shadow>
+
+        <!--
+            These 'OnPlatform' are related to a MAUI bug fixed but not totally.
+            For Android the label with maxline and linebreakmode works correctly but on iOS it doesn't work.
+            For this reason I manage a single line without linebreakmode on iOS until the bug is definitively resolved
+            
+            https://github.com/dotnet/maui/discussions/5492
+        -->
+        <Grid
+            ColumnDefinitions="Auto,*"
+            ColumnSpacing="4"
+            HeightRequest="80"
+            RowDefinitions="{OnPlatform Default='20,3*,2*'}"
+            RowSpacing="4">
+
+            <Image
+                Grid.Row="0"
+                Grid.Column="0"
+                HorizontalOptions="Start"
+                Source="{Binding ImgSrc}">
+                <Image.Behaviors>
+                    <toolkit:IconTintColorBehavior TintColor="{Binding IconLabelColor}" />
+                </Image.Behaviors>
+            </Image>
+
+            <Label
+                Grid.Row="0"
+                Grid.Column="1"
+                HorizontalOptions="End"
+                HorizontalTextAlignment="End"
+                LineBreakMode="TailTruncation"
+                Text="{Binding LabelButton}"
+                VerticalOptions="Start"
+                VerticalTextAlignment="Start" />
+
+            <Label
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                FontSize="Small"
+                LineBreakMode="TailTruncation"
+                MaxLines="{OnPlatform Default='2'}"
+                Text="{Binding Title}"
+                TextColor="{StaticResource DazeBlack}" />
+
+            <Label
+                Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                FontAttributes="Bold"
+                LineBreakMode="TailTruncation"
+                TextColor="{Binding IconLabelColor}">
+                <Label.Triggers>
+
+                    <DataTrigger
+                        Binding="{Binding SetEmptyWhen}"
+                        TargetType="Label"
+                        Value="True">
+                        <Setter Property="Text" Value="---" />
+                    </DataTrigger>
+
+                    <DataTrigger
+                        Binding="{Binding SetEmptyWhen}"
+                        TargetType="Label"
+                        Value="False">
+                        <Setter Property="Text" Value="{Binding Value}" />
+                    </DataTrigger>
+
+                </Label.Triggers>
+            </Label>
+
+        </Grid>
+    </Border>
+</ContentView>
